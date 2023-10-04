@@ -80,10 +80,42 @@ export default function CartPage(){
     removeProduct(id);
   }
 
+  async function goToPayment(){
+    const res = await axios.post('/api/checkout', {
+      name,
+      email,
+      city,
+      postalCode,
+      streetAddress,
+      country,
+      cartProducts,
+    });
+    if (res.data.url){
+      window.location = res.data.url;
+    }
+  }
+
   let total = 0;
   for(const productID of cartProducts){
     const price = products.find(product => product._id === productID)?.price || 0;
     total += price;
+  }
+
+  if(window.location.href.includes('success')){
+    return(
+      <>
+        <Header />
+        <Center>
+          <Box>
+            <h1>Thank you for your purchase!</h1>
+            <p>
+              We will email you when your order is 
+              ready to be shipped.
+            </p>
+          </Box>
+        </Center>
+      </>
+    )
   }
 
   return(
@@ -142,41 +174,42 @@ export default function CartPage(){
           {!!cartProducts?.length && (
             <Box>
               <h2>Order information</h2>
-              <form method="post" action="/api/checkout">
                 <Input type="text"
-                      placeholder="Name"
-                      value={name}
-                      name="name"
-                      onChange={ev => setName(ev.target.value)} />
+                        placeholder="Name"
+                        value={name}
+                        name="name"
+                        onChange={ev => setName(ev.target.value)} />
                 <Input type="text"
-                      placeholder="Email"
-                      value={email}
-                      name="email"
-                      onChange={ev => setEmail(ev.target.value)}/>
+                        placeholder="Email"
+                        value={email}
+                        name="email"
+                        onChange={ev => setEmail(ev.target.value)}/>
                 <CityHolder>
                   <Input type="text"
-                        placeholder="City"
-                        value={city}
-                        name="city"
-                        onChange={ev => setCity(ev.target.value)}/>
+                          placeholder="City"
+                          value={city}
+                          name="city"
+                          onChange={ev => setCity(ev.target.value)}/>
                   <Input type="text"
-                        placeholder="Postal Code"
-                        value={postalCode}
-                        name="postalCode"
-                        onChange={ev => setPostalCode(ev.target.value)}/>
+                          placeholder="Postal Code"
+                          value={postalCode}
+                          name="postalCode"
+                          onChange={ev => setPostalCode(ev.target.value)}/>
                 </CityHolder>
                 <Input type="text"
-                      placeholder="Street Address"
-                      value={streetAddress}
-                      name="streetAddress"
-                      onChange={ev => setStreetAddress(ev.target.value)}/>
+                        placeholder="Street Address"
+                        value={streetAddress}
+                        name="streetAddress"
+                        onChange={ev => setStreetAddress(ev.target.value)}/>
                 <Input type="text"
-                      placeholder="Country"
-                      value={country}
-                      name="country"
-                      onChange={ev => setCountry(ev.target.value)}/>
-                <Button block primary type="submit">Continue to payment</Button>
-              </form>
+                        placeholder="Country"
+                        value={country}
+                        name="country"
+                        onChange={ev => setCountry(ev.target.value)}/>
+                <Button block primary 
+                  onClick={goToPayment}>
+                  Continue to payment
+                </Button>
             </Box>
           )}
         </ColumnsWrapper>
