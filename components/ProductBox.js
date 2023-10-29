@@ -57,7 +57,7 @@ export default function ProductBox({
   price,
   images,
 }){
-  const url = '/products/' + _id;
+  const url = '/product/' + _id;
 
   const {addProduct} = useContext(CartContext);
 
